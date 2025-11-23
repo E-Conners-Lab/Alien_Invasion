@@ -1,3 +1,5 @@
+import json
+
 class GameStats:
     """Track statistics for Alien Invasin."""
 
@@ -6,7 +8,24 @@ class GameStats:
         self.settings = ai_game.settings
         self.reset_stats()
 
+        # Load high score from file
+        self.high_score = self.load_high_score()
+
     def reset_stats(self):
         """Initialize statistics that can change during the game."""
         self.ships_left = self.settings.ship_limit
         self.score = 0
+
+    def load_high_score(self):
+        """Load high score from a file."""
+        try:
+            with open("high_score.json", "r") as f:
+                return int(json.load(f))
+        except (FileNotFoundError, json.JSONDecodeError, ValueError):
+            return 0
+
+    def save_high_score(self):
+        """Save the high score to a file."""
+        with open("high_score.json", "w") as f:
+            json.dump(self.high_score, f)
+

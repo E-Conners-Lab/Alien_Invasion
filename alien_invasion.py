@@ -74,6 +74,7 @@ class AlienInvasion:
         self.stats.reset_stats()
         self.game_active = True
         self.sb.prep_score()
+        self.sb.prep_high_score()
 
         # Get rid of a ny remaining bullets and aliens
         self.bullets.empty()
@@ -127,6 +128,7 @@ class AlienInvasion:
             for aliens in collisions.values():
                 self.stats.score += self.settings.alien_points * len(aliens)
             self.sb.prep_score()
+            self.sb.check_high_score()
 
         if not self.aliens:
             # Destroy existing bullets and create new fleet.
@@ -151,8 +153,8 @@ class AlienInvasion:
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
 
-            # Look for aliens hitting the bottom of the screen.
-            self._check_aliens_bottom()
+        # Look for aliens hitting the bottom of the screen.
+        self._check_aliens_bottom()
 
     def _check_events(self):
         """Respond to keypresses and mouse events."""
