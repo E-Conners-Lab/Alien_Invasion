@@ -5,6 +5,7 @@ import pygame
 
 from settings import Settings
 from game_stats import GameStats
+from button import Button
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
@@ -16,6 +17,8 @@ class AlienInvasion:
     def __init__(self):
         """Initialize the game, and create game resources."""
         pygame.init()
+
+
         self.clock = pygame.time.Clock()
         self.settings = Settings()
 
@@ -31,15 +34,16 @@ class AlienInvasion:
 
         # Create an instance to store game statistics.
         self.stats = GameStats(self)
-
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
-
         self._create_fleet()
 
-        # Start Alien Invasion in an active state
-        self.game_active = True
+        # Start Alien Invasion in an inactive state
+        self.game_active = False
+
+        # Make the Play button.
+        self.play_button = Button(self, "Play")
 
         # Set the background color.
         #self.bg_color = (0, 230, 230) - Removed after creating settings.py
@@ -66,7 +70,6 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
-
         self._check_bullet_alien_collisions()
 
     def _ship_hit(self):
@@ -185,7 +188,6 @@ class AlienInvasion:
             alien.rect.y += self.settings.fleet_drop_speed
         self.settings.fleet_direction *= -1
 
-
     def _create_alien(self, x_position, y_position):
         """Create an alien and place it in the fleet."""
         new_alien = Alien(self)
@@ -201,6 +203,10 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+
+        # Draw the play button if the game is inactive.
+        if not self.game_active:
+            self.play_button.draw_button()
 
         pygame.display.flip()
 
