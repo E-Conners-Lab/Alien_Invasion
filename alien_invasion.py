@@ -47,6 +47,9 @@ class AlienInvasion:
 
         # Make the Play button.
         self.play_button = Button(self, "Play")
+        self.play_again_button = Button(self, "Play Again")
+        self.play_again_button.rect.center = (self.screen.get_rect().centerx, self.screen.get_rect().centery + 100)
+        self.play_again_button._prep_msg("Play Again")
 
         # Set the background color.
         #self.bg_color = (0, 230, 230) - Removed after creating settings.py
@@ -76,6 +79,7 @@ class AlienInvasion:
         self.sb.prep_score()
         self.sb.prep_level()
         self.sb.prep_high_score()
+        self.sb.prep_ships()
 
         # Get rid of a ny remaining bullets and aliens
         self.bullets.empty()
@@ -102,8 +106,9 @@ class AlienInvasion:
     def _ship_hit(self):
         """Respond to the ship being hit by an alien."""
         if self.stats.ships_left > 0:
-            # Decrement ships left.
+            # Decrement ships left, and update scoreboard
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
 
             # Get rid of any remaining bullets and aliens.
             self.bullets.empty()
@@ -175,10 +180,12 @@ class AlienInvasion:
                 self._check_play_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
-        """Start a new game when the player clicks Play."""
-        if self.play_button.rect.collidepoint(mouse_pos) and not self.game_active:
-            self._start_game()
+        """Start a new game when the player clicks Play or Play Again."""
+        play_clicked = self.play_button.rect.collidepoint(mouse_pos)
+        play_again_clicked = self.play_again_button.rect.collidepoint(mouse_pos)
 
+        if (play_clicked or play_again_clicked) and not self.game_active:
+            self._start_game()
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
@@ -192,8 +199,6 @@ class AlienInvasion:
             self.fire_bullet()
         elif event.key == pygame.K_p and not self.game_active:
             self._start_game()
-
-
 
     def _check_keyup_events(self, event):
         """Respond to releases."""
@@ -247,9 +252,30 @@ class AlienInvasion:
         new_alien.rect.y = y_position
         self.aliens.add(new_alien)
 
+    def _draw_game_over_box(self):
+        """Display 'Game Over' message in a box."""
+        font = pygame.font.SysFont(None, 64)
+        game_over_text = font.render("GAME OVER", True, (255,0,0),
+                                     self.settings.bg_color)
+        text_rect = game_over_text.get_rect()
+        text_rect.center = self.screen.get_rect().center
+
+        # Optional; draw a box around the text
+        box_padding = 30
+        box_rect = pygame.Rect(
+            text_rect.left - box_padding,
+            text_rect.top - box_padding,
+            text_rect.width + 2 * box_padding,
+            text_rect.height + 2 * box_padding,
+        )
+
+        pygame.draw.rect(self.screen, (0,0,0), box_rect)
+        self.screen.blit(game_over_text, text_rect)
+
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         self.screen.fill(self.settings.bg_color)
+
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.ship.blitme()
@@ -258,9 +284,14 @@ class AlienInvasion:
         # Draw the score information.
         self.sb.show_score()
 
-        # Draw the play button if the game is inactive.
+        # If the game is inactive, draw the Play button.
         if not self.game_active:
             self.play_button.draw_button()
+
+            # Show Game Over message if out of lives
+            if self.stats.ships_left == 0:
+                self._draw_game_over_box()
+                self.play_again_button.draw_button()
 
         pygame.display.flip()
 
