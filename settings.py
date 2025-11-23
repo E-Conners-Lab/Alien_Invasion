@@ -22,7 +22,7 @@ class Settings:
 
         # Alien settings
         self.alien_speed = 1.0
-        self.fleet_drop_speed = 10
+        self.fleet_drop_speed = 60
         # fleet_direction of 1 represents right; -1 represents left.
         self.fleet_direction = 1
 
@@ -39,6 +39,9 @@ class Settings:
 
         # fleet direction of 1 represents right; -1 represents left.
         self.fleet_direction = 1
+
+        # Socre settings
+        self.alien_points = 50
 
     def increase_speed(self):
         """Increase speed settings."""
