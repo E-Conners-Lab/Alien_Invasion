@@ -36,10 +36,10 @@ This version of the game demonstrates key concepts in object-oriented programmin
 The following enhancements are part of the roadmap as outlined in the book:
 
 1. **Add a single alien** – ✅ *(Complete)*
-2. **Create a fleet of aliens**
-3. **Make the fleet move sideways and drop down**
-4. **Detect bullet-alien collisions and remove aliens**
-5. **Limit ships and end game on collision or missed invaders**
+2. **Create a fleet of aliens** - ✅ *(Complete)*
+3. **Make the fleet move sideways and drop down** - ✅ *(Complete)*
+4. **Detect bullet-alien collisions and remove aliens** - ✅ *(Complete)*
+5. **Limit ships and end game on collision or missed invaders** - ✅ *(Complete)*
 
 These incremental improvements build problem-solving skills while providing deeper insight into game development workflows.
 
